@@ -26,7 +26,7 @@ export const Login = async (req: Request, res: Response) => {
     const { email, password } = req.body;
     const [user] = await User.find({ email: email });
     const compared = await bcryptjs.compare(password, user.password);
-    if (!compared || !compared) {
+    if (!user || !compared) {
       return res.status(400).json({ success: false, message: "email or password not correct" });
     } else {
       return res.status(200).json({ success: true, data: user });
