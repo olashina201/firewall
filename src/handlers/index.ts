@@ -5,6 +5,8 @@ import User from "../models/User";
 export const Register = async (req: Request, res: Response) => {
   try {
     const { firstname, lastname, middlename, email, password } = req.body;
+    const user = await User.findOne({ email: email });
+    if(user) return res.send({ error: "user with that email already exist" })
     const passwordHash = await bcryptjs.hash(password, 10);
     const newUser = new User({
       firstname,
