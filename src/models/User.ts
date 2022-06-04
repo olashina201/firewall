@@ -28,4 +28,4 @@ const User = new Schema({
     },
 })
 
-export default mongoose.models.users || mongoose.model("users", User);
+export default mongoose.models.firewall || mongoose.model("firewall", User);
