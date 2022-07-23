@@ -5,6 +5,18 @@ import User from "../models/User";
 export const Register = async (req: Request, res: Response) => {
   try {
     const { firstname, lastname, middlename, email, password } = req.body;
+    const user = await User.findOne({ email: email });
+    let atpos = email.indexOf("@");
+    let domain = email.split("@")[1];
+    if (user) {
+      return res
+        .status(400)
+        .send({ error: "user with this email already exist" });
+    } else if (atpos < 1 || domain !== "gmail.com") {
+      return res
+        .status(400)
+        .send({ error: "only email with domain @gmail.com is supported." });
+    }
     const passwordHash = await bcryptjs.hash(password, 10);
     const newUser = new User({
       firstname,
@@ -26,8 +38,14 @@ export const Login = async (req: Request, res: Response) => {
     const { email, password } = req.body;
     const [user] = await User.find({ email: email });
     const compared = await bcryptjs.compare(password, user.password);
-    if (!user || !compared) {
-      return res.status(400).json({ success: false, message: "email or password not correct" });
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User with this email not found" });
+    } else if (!compared) {
+      return res
+        .status(400)
+        .json({ success: false, message: "email or password not correct" });
     } else {
       return res.status(200).json({ success: true, data: user });
     }
