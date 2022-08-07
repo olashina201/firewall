@@ -4,7 +4,7 @@ import User from "../models/User";
 
 export const Register = async (req: Request, res: Response) => {
   try {
-    const { firstname, lastname, middlename, email, password } = req.body;
+    const { fullName,  userName, email, password, option } = req.body;
     const user = await User.findOne({ email: email });
     let atpos = email.indexOf("@");
     let domain = email.split("@")[1];
@@ -19,11 +19,11 @@ export const Register = async (req: Request, res: Response) => {
     }
     const passwordHash = await bcryptjs.hash(password, 10);
     const newUser = new User({
-      firstname,
-      lastname,
-      middlename,
+      fullName,
+      userName,
       email,
       password: passwordHash,
+      option
     });
     const saved = await newUser.save();
     return res.status(200).json({ success: true, data: saved });
@@ -35,8 +35,8 @@ export const Register = async (req: Request, res: Response) => {
 
 export const Login = async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
-    const [user] = await User.find({ email: email });
+    const { userName, password } = req.body;
+    const [user] = await User.find({ userName: userName });
     const compared = await bcryptjs.compare(password, user.password);
     if (!user) {
       return res
