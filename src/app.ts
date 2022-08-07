@@ -23,8 +23,6 @@ app.use((req: Request, res: Response, next: any) => {
   );
   next();
 });
-
-
 app.get("/", async (_req: Request, res: Response) => {
   res.send({ status: 200, message: "server up and running" });
 });

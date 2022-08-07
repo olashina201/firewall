@@ -1,17 +1,12 @@
 import mongoose, { Schema } from "mongoose"
 
 const User = new Schema({
-    firstname: {
+    fullName: {
         type: String,
         trim: true,
         required: true
     },
-    lastname: {
-        type: String,
-        trim: true,
-        required: true
-    },
-    middlename: {
+    userName: {
         type: String,
         trim: true,
         required: true
@@ -22,6 +17,11 @@ const User = new Schema({
         required: true
     },
     password: {
+        type: String,
+        trim: true,
+        required: true
+    },
+    option: {
         type: String,
         trim: true,
         required: true
