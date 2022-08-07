@@ -26,11 +26,16 @@ const User = new Schema({
         trim: true,
         required: true
     },
+    amount: {
+        type: Number,
+        default: 0
+    },
     createdAt: {
         type: Date,
         required: true,
         default: Date.now
     },
+
 })
 
 export default mongoose.models.firewall || mongoose.model("firewall", User);
