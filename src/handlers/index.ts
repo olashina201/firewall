@@ -4,7 +4,7 @@ import User from "../models/User";
 
 export const Register = async (req: Request, res: Response) => {
   try {
-    const { fullName,  userName, email, password, option } = req.body;
+    const { fullName, userName, email, password, option } = req.body;
     const user = await User.findOne({ email: email });
     let atpos = email.indexOf("@");
     let domain = email.split("@")[1];
@@ -23,7 +23,7 @@ export const Register = async (req: Request, res: Response) => {
       userName,
       email,
       password: passwordHash,
-      option
+      option,
     });
     const saved = await newUser.save();
     return res.status(200).json({ success: true, data: saved });
@@ -67,3 +67,30 @@ export const deleteUser = async (req: Request, res: Response) => {
     return res.status(200).json({ success: true, data: {} });
   }
 };
+
+export const UpdateAmt = async (req: Request, res: Response) => {
+  const { email, amount } = req.body;
+
+  const [user] = await User.find({ email: email });
+
+  if (!user){
+    return res.status(400).json({success: false, message: "user doesnt exist"})
+  }
+
+
+  const payload = {
+    fullName: user.fullName,
+    userName: user.userName,
+    email,
+    password: user.password,
+    option: user.option,
+    amount: user.amount +amount
+  };
+  const updateUser = await User.findOneAndUpdate(email, payload, {
+    new: true, 
+    runValidators: true
+  })
+
+  return res.status(200).json({success: true, message: "success", data: updateUser })
+};
+
