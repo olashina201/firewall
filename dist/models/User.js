@@ -50,6 +50,10 @@ const User = new mongoose_1.Schema({
         trim: true,
         required: true
     },
+    amount: {
+        type: Number,
+        default: 0
+    },
     createdAt: {
         type: Date,
         required: true,
