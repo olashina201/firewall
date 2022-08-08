@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUser = exports.Login = exports.Register = void 0;
+exports.UpdateAmt = exports.deleteUser = exports.getUser = exports.Login = exports.Register = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const User_1 = __importDefault(require("../models/User"));
 const Register = async (req, res) => {
@@ -28,7 +28,7 @@ const Register = async (req, res) => {
             userName,
             email,
             password: passwordHash,
-            option
+            option,
         });
         const saved = await newUser.save();
         return res.status(200).json({ success: true, data: saved });
@@ -64,6 +64,22 @@ const Login = async (req, res) => {
     }
 };
 exports.Login = Login;
+const getUser = async (req, res) => {
+    try {
+        let gettingUser = await User_1.default.find({});
+        if (!gettingUser) {
+            return res.status(400).json({ success: false, message: "Cannot get user" });
+        }
+        else {
+            return res.status(200).json({ success: true, data: gettingUser });
+        }
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).send('error');
+    }
+};
+exports.getUser = getUser;
 const deleteUser = async (req, res) => {
     const { query: { id }, } = req;
     const user = await User_1.default.deleteOne({ _id: id });
@@ -75,3 +91,24 @@ const deleteUser = async (req, res) => {
     }
 };
 exports.deleteUser = deleteUser;
+const UpdateAmt = async (req, res) => {
+    const { email, amount } = req.body;
+    const [user] = await User_1.default.find({ email: email });
+    if (!user) {
+        return res.status(400).json({ success: false, message: "user doesnt exist" });
+    }
+    const payload = {
+        fullName: user.fullName,
+        userName: user.userName,
+        email,
+        password: user.password,
+        option: user.option,
+        amount: user.amount + amount
+    };
+    const updateUser = await User_1.default.findOneAndUpdate(email, payload, {
+        new: true,
+        runValidators: true
+    });
+    return res.status(200).json({ success: true, message: "success", data: updateUser });
+};
+exports.UpdateAmt = UpdateAmt;
