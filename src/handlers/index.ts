@@ -102,7 +102,7 @@ export const UpdateAmt = async (req: Request, res: Response) => {
     email,
     password: user.password,
     option: user.option,
-    amount: user.amount +amount
+    amount: user.amount + amount
   };
   const updateUser = await User.findOneAndUpdate(email, payload, {
     new: true, 
