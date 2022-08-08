@@ -1,4 +1,5 @@
 import { Response, Request } from "express";
+import { Forbidden, InternalServerError } from 'http-errors';
 import bcryptjs from "bcryptjs";
 import User from "../models/User";
 
@@ -54,6 +55,23 @@ export const Login = async (req: Request, res: Response) => {
     return res.status(500).send("error");
   }
 };
+
+  export const getUser = async (req: Request, res: Response) => {
+      try {
+        let gettingUser = await User.find({})
+
+        if (!gettingUser) {
+          return res .status(400).json({success: false, message:"Cannot get user"})  
+      }
+      else {
+        return res.status(200).json({success: true, data: gettingUser})
+      }
+    }
+    catch (err){
+      console.log(err)
+      return res.status(500).send('error')
+    }
+  }
 
 export const deleteUser = async (req: Request, res: Response) => {
   const {
