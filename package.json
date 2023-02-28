@@ -5,13 +5,13 @@
   "main": "app.ts",
   "scripts": {
     "build": "tsc",
-    "start": "node --unhandled-rejections=strict ./dist/app.js",
+    "start": "nodemon --config nodemon.json src/app.ts",
     "dev": "nodemon --config nodemon.json src/app.ts",
     "deploy": "git add . && git commit -m 'build' && git push origin master && git push heroku master:main",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
-    "node": "16.14.1"
+    "node": "^16.14.1"
   },
   "author": "",
   "license": "ISC",
