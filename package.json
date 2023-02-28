@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "npx tsc",
     "start": "nodemon --config nodemon.json src/app.ts",
     "dev": "nodemon --config nodemon.json src/app.ts",
     "deploy": "git add . && git commit -m 'build' && git push origin master && git push heroku master:main",
