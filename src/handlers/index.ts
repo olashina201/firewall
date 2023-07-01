@@ -112,3 +112,29 @@ export const UpdateAmt = async (req: Request, res: Response) => {
   return res.status(200).json({success: true, message: "success", data: updateUser })
 };
 
+export const withdrawAmt = async (req: Request, res: Response) => {
+  const { email, amount } = req.body;
+
+  const [user] = await User.find({ email: email });
+
+  if (!user){
+    return res.status(400).json({success: false, message: "user doesnt exist"})
+  }
+
+
+  const payload = {
+    fullName: user.fullName,
+    userName: user.userName,
+    email,
+    password: user.password,
+    option: user.option,
+    amount: user.amount - amount
+  };
+  const updateUser = await User.findOneAndUpdate(email, payload, {
+    new: true, 
+    runValidators: true
+  })
+
+  return res.status(200).json({success: true, message: "success", data: updateUser })
+};
+
