@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import { Forbidden, InternalServerError } from 'http-errors';
+import { Forbidden, InternalServerError } from "http-errors";
 import bcryptjs from "bcryptjs";
 import User from "../models/User";
 
@@ -56,22 +56,22 @@ export const Login = async (req: Request, res: Response) => {
   }
 };
 
-  export const getUser = async (req: Request, res: Response) => {
-      try {
-        let gettingUser = await User.find({})
+export const getUser = async (req: Request, res: Response) => {
+  try {
+    let gettingUser = await User.find({});
 
-        if (!gettingUser) {
-          return res .status(400).json({success: false, message:"Cannot get user"})  
-      }
-      else {
-        return res.status(200).json({success: true, data: gettingUser})
-      }
+    if (!gettingUser) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Cannot get user" });
+    } else {
+      return res.status(200).json({ success: true, data: gettingUser });
     }
-    catch (err){
-      console.log(err)
-      return res.status(500).send('error')
-    }
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send("error");
   }
+};
 
 export const deleteUser = async (req: Request, res: Response) => {
   const {
@@ -86,55 +86,70 @@ export const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
-export const UpdateAmt = async (req: Request, res: Response) => {
+export const updateAmt = async (req: Request, res: Response) => {
   const { email, amount } = req.body;
 
-  const [user] = await User.find({ email: email });
+  try {
+    const user = await User.findOne({ email });
 
-  if (!user){
-    return res.status(400).json({success: false, message: "user doesnt exist"})
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User does not exist" });
+    }
+
+    const updatedAmount = user.amount + amount;
+
+    user.amount = updatedAmount;
+    const updatedUser = await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Amount updated successfully",
+      data: updatedUser,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred",
+      error: error.message,
+    });
   }
-
-
-  const payload = {
-    fullName: user.fullName,
-    userName: user.userName,
-    email,
-    password: user.password,
-    option: user.option,
-    amount: user.amount + amount
-  };
-  const updateUser = await User.findOneAndUpdate(email, payload, {
-    new: true, 
-    runValidators: true
-  })
-
-  return res.status(200).json({success: true, message: "success", data: updateUser })
 };
 
 export const withdrawAmt = async (req: Request, res: Response) => {
   const { email, amount } = req.body;
 
-  const [user] = await User.find({ email: email });
+  try {
+    const user = await User.findOne({ email });
 
-  if (!user){
-    return res.status(400).json({success: false, message: "user doesnt exist"})
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User does not exist" });
+    }
+
+    const updatedAmount = user.amount - amount;
+
+    if (updatedAmount < 0) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Insufficient funds" });
+    }
+
+    user.amount = updatedAmount;
+    const updatedUser = await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Withdrawal successful",
+      data: updatedUser,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred",
+      error: error.message,
+    });
   }
-
-
-  const payload = {
-    fullName: user.fullName,
-    userName: user.userName,
-    email,
-    password: user.password,
-    option: user.option,
-    amount: user.amount - amount
-  };
-  const updateUser = await User.findOneAndUpdate(email, payload, {
-    new: true, 
-    runValidators: true
-  })
-
-  return res.status(200).json({success: true, message: "success", data: updateUser })
 };
-
