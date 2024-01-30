@@ -16,7 +16,6 @@ app.use(cors());
 app.use((req: Request, res: Response, next: any) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "*");
-  //res.header("Content-type", "text/plain");
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
