@@ -30,7 +30,7 @@ app.get("/", async (_req: Request, res: Response) => {
 // routes
 app.use("/api", router);
 
-const port: string | number = process.env.PORT || 8080;
+const port: string | number = process.env.PORT || 8085;
 
 app.listen(port, () => {
   return console.log(`Server is running on port ${port}`);
