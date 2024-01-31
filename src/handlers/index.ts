@@ -37,22 +37,26 @@ export const Register = async (req: Request, res: Response) => {
 export const Login = async (req: Request, res: Response) => {
   try {
     const { userName, password } = req.body;
-    const [user] = await User.find({ userName: userName });
-    const compared = await bcryptjs.compare(password, user.password);
+    const user = await User.findOne({ userName: userName });
+
     if (!user) {
       return res
         .status(400)
-        .json({ success: false, message: "User with this email not found" });
-    } else if (!compared) {
+        .json({ success: false, message: "User with this username not found" });
+    }
+
+    const compared = await bcryptjs.compare(password, user.password);
+
+    if (!compared) {
       return res
         .status(400)
-        .json({ success: false, message: "email or password not correct" });
-    } else {
-      return res.status(200).json({ success: true, data: user });
+        .json({ success: false, message: "Username or password incorrect" });
     }
+
+    return res.status(200).json({ success: true, data: user });
   } catch (err) {
     console.log(err);
-    return res.status(500).send("error");
+    return res.status(500).send("Error");
   }
 };
 
